@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: step2win
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_AUTH_TOKEN
+        sync: false
+      - key: BETTER_AUTH_SECRET
+        sync: false
+      - key: WEBSITE_URL
+        sync: false

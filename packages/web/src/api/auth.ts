@@ -1,0 +1,50 @@
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { bearer } from "better-auth/plugins";
+import { expo } from "@better-auth/expo";
+import { db } from "./database";
+
+export const auth = betterAuth({
+  basePath: "/api/auth",
+  baseURL: process.env.WEBSITE_URL,
+  database: drizzleAdapter(db, { provider: "sqlite" }),
+  emailAndPassword: { enabled: true },
+  secret: process.env.BETTER_AUTH_SECRET,
+  trustedOrigins: (request) => {
+    const origin = request?.headers.get("origin");
+    return origin ? [origin] : ["*"];
+  },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "student",
+        input: false,
+      },
+      xp: {
+        type: "number",
+        required: false,
+        defaultValue: 0,
+        input: false,
+      },
+      grade: {
+        type: "number",
+        required: false,
+        input: true,
+      },
+      direction: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      language: {
+        type: "string",
+        required: false,
+        defaultValue: "ru",
+        input: true,
+      },
+    },
+  },
+  plugins: [bearer(), expo()],
+});
